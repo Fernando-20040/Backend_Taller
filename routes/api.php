@@ -4,22 +4,24 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UsuarioController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\TareaController;
+use App\Http\Controllers\Api\TareaReporteController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
+| Aquí se registran las rutas de la API.
 |
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-// Rutas para el controlador de usuarios, asignando nombres personalizados
 
+// -------------------------
+// RUTAS DE USUARIOS
+// -------------------------
 Route::prefix('usuarios')->group(function () {
     Route::get('/listUsers', [UsuarioController::class, 'index']);
     Route::post('/addUser', [UsuarioController::class, 'store']);
@@ -28,5 +30,16 @@ Route::prefix('usuarios')->group(function () {
     Route::delete('/deleteUser/{id}', [UsuarioController::class, 'destroy']);
 });
 
+// -------------------------
+// LOGIN / LOGOUT
+// -------------------------
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+
+// -------------------------
+// RUTAS DE TAREAS (públicas mientras pruebas)
+// -------------------------
+Route::get('/tareas', [TareaController::class, 'index']);
+Route::post('/tareas', [TareaController::class, 'store']);
+Route::get('/tareas/reporte', [TareaReporteController::class, 'export']); // <- método explícito
+Route::get('/tareas/reporte-csv', [TareaReporteController::class, 'exportCsv']);
