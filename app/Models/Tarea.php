@@ -16,3 +16,5 @@ class Tarea extends Model
         return $this->belongsTo(Usuario::class, 'user_id');
     }
 }
+
+//prueba
