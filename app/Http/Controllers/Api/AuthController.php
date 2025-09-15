@@ -9,9 +9,6 @@ use App\Models\Usuario;
 
 class AuthController extends Controller
 {
-    /**
-     * Registro de un nuevo usuario
-     */
     public function register(Request $request)
     {
         $validated = $request->validate([
@@ -24,7 +21,6 @@ class AuthController extends Controller
         $validated['password'] = Hash::make($validated['password']);
         $usuario = Usuario::create($validated);
 
-        // Generar token
         $token = $usuario->createToken('api-token')->plainTextToken;
 
         return response()->json([
@@ -34,9 +30,6 @@ class AuthController extends Controller
         ], 201);
     }
 
-    /**
-     * Login de usuario existente
-     */
     public function login(Request $request)
     {
         $request->validate([
@@ -46,12 +39,10 @@ class AuthController extends Controller
 
         $usuario = Usuario::where('email', $request->email)->first();
 
-        if (! $usuario || ! Hash::check($request->password, $usuario->password)) {
-            // ✅ Devolver 401 (no 422) para credenciales inválidas
+        if (!$usuario || !Hash::check($request->password, $usuario->password)) {
             return response()->json(['message' => 'Credenciales inválidas.'], 401);
         }
 
-        // Generar token
         $token = $usuario->createToken('api-token')->plainTextToken;
 
         return response()->json([
@@ -61,19 +52,11 @@ class AuthController extends Controller
         ], 200);
     }
 
-    /**
-     * Logout (revocar tokens)
-     */
     public function logout(Request $request)
     {
-        // Opción A: cerrar SOLO la sesión/token actual (recomendado)
+        // Revoca SOLO el token actual (sesión actual)
         $request->user()->currentAccessToken()?->delete();
 
-        // Opción B: cerrar TODAS las sesiones/tokens del usuario
-        // $request->user()->tokens()->delete();
-
-        return response()->json([
-            'message' => 'Logout exitoso'
-        ], 200);
+              return response()->json(['message' => 'Logout exitoso'], 200);
     }
 }

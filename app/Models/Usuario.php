@@ -18,12 +18,10 @@ class Usuario extends Authenticatable
 
     protected $hidden = ['password'];
 
-    // Hash automático del password al hacer $usuario->password = '...'
     protected $casts = [
         'password' => 'hashed',
     ];
 
-    // Relación: un usuario tiene muchas tareas (FK: user_id)
     public function tareas()
     {
         return $this->hasMany(Tarea::class, 'user_id');
